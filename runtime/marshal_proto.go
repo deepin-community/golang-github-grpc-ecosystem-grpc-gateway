@@ -1,18 +1,17 @@
 package runtime
 
 import (
+	"errors"
 	"io"
 
-	"errors"
-	"github.com/golang/protobuf/proto"
-	"io/ioutil"
+	"google.golang.org/protobuf/proto"
 )
 
 // ProtoMarshaller is a Marshaller which marshals/unmarshals into/from serialize proto bytes
 type ProtoMarshaller struct{}
 
 // ContentType always returns "application/octet-stream".
-func (*ProtoMarshaller) ContentType() string {
+func (*ProtoMarshaller) ContentType(_ interface{}) string {
 	return "application/octet-stream"
 }
 
@@ -37,7 +36,7 @@ func (*ProtoMarshaller) Unmarshal(data []byte, value interface{}) error {
 // NewDecoder returns a Decoder which reads proto stream from "reader".
 func (marshaller *ProtoMarshaller) NewDecoder(reader io.Reader) Decoder {
 	return DecoderFunc(func(value interface{}) error {
-		buffer, err := ioutil.ReadAll(reader)
+		buffer, err := io.ReadAll(reader)
 		if err != nil {
 			return err
 		}
@@ -52,8 +51,7 @@ func (marshaller *ProtoMarshaller) NewEncoder(writer io.Writer) Encoder {
 		if err != nil {
 			return err
 		}
-		_, err = writer.Write(buffer)
-		if err != nil {
+		if _, err := writer.Write(buffer); err != nil {
 			return err
 		}
 

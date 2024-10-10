@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
@@ -16,7 +17,16 @@ var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &JSONPb{OrigName: true}
+	defaultMarshaler = &HTTPBodyMarshaler{
+		Marshaler: &JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: true,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
+		},
+	}
 )
 
 // MarshalerForRequest returns the inbound/outbound marshalers for this request.
@@ -36,7 +46,7 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, out
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
 		contentType, _, err := mime.ParseMediaType(contentTypeVal)
 		if err != nil {
-			grpclog.Infof("Failed to parse Content-Type %s: %v", contentTypeVal, err)
+			grpclog.Errorf("Failed to parse Content-Type %s: %v", contentTypeVal, err)
 			continue
 		}
 		if m, ok := mux.marshalers.mimeMap[contentType]; ok {

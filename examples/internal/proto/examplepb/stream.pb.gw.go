@@ -13,17 +13,15 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/golang/protobuf/descriptor"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 // Suppress "imported and not used" errors
@@ -32,14 +30,13 @@ var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
 var _ = metadata.Join
 
 func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		grpclog.Errorf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -50,25 +47,25 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 			break
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			grpclog.Errorf("Failed to decode request: %v", err)
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
 				break
 			}
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		grpclog.Infof("Failed to terminate client stream: %v", err)
+		grpclog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
+		grpclog.Errorf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -79,9 +76,20 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 
 }
 
+var (
+	filter_StreamService_List_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
 func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq Options
 	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StreamService_List_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
 
 	stream, err := client.List(ctx, &protoReq)
 	if err != nil {
@@ -100,7 +108,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
-		grpclog.Infof("Failed to start streaming: %v", err)
+		grpclog.Errorf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
@@ -111,23 +119,14 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 			return err
 		}
 		if err != nil {
-			grpclog.Infof("Failed to decode request: %v", err)
+			grpclog.Errorf("Failed to decode request: %v", err)
 			return err
 		}
 		if err := stream.Send(&protoReq); err != nil {
-			grpclog.Infof("Failed to send request: %v", err)
+			grpclog.Errorf("Failed to send request: %v", err)
 			return err
 		}
 		return nil
-	}
-	if err := handleSend(); err != nil {
-		if cerr := stream.CloseSend(); cerr != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", cerr)
-		}
-		if err == io.EOF {
-			return stream, metadata, nil
-		}
-		return nil, metadata, err
 	}
 	go func() {
 		for {
@@ -136,16 +135,44 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 			}
 		}
 		if err := stream.CloseSend(); err != nil {
-			grpclog.Infof("Failed to terminate client stream: %v", err)
+			grpclog.Errorf("Failed to terminate client stream: %v", err)
 		}
 	}()
 	header, err := stream.Header()
 	if err != nil {
-		grpclog.Infof("Failed to get header from client: %v", err)
+		grpclog.Errorf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
 	return stream, metadata, nil
+}
+
+var (
+	filter_StreamService_Download_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
+func request_StreamService_Download_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_DownloadClient, runtime.ServerMetadata, error) {
+	var protoReq Options
+	var metadata runtime.ServerMetadata
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_StreamService_Download_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	stream, err := client.Download(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 // RegisterStreamServiceHandlerServer registers the http handlers for service StreamService to "mux".
@@ -175,27 +202,34 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		return
 	})
 
+	mux.Handle("GET", pattern_StreamService_Download_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+
 	return nil
 }
 
 // RegisterStreamServiceHandlerFromEndpoint is same as RegisterStreamServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.NewClient(endpoint, opts...)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -220,19 +254,21 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/bulk"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkCreate_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
+		resp, md, err := request_StreamService_BulkCreate_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StreamService_BulkCreate_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StreamService_BulkCreate_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -240,19 +276,21 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_List_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
+		resp, md, err := request_StreamService_List_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StreamService_List_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_StreamService_List_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -260,19 +298,43 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkEcho_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
+		resp, md, err := request_StreamService_BulkEcho_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StreamService_BulkEcho_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_StreamService_BulkEcho_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_StreamService_Download_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", runtime.WithHTTPPathPattern("/v1/example/download"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_StreamService_Download_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_StreamService_Download_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -280,11 +342,13 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_StreamService_BulkCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "bulk"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_StreamService_BulkCreate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "bulk"}, ""))
 
-	pattern_StreamService_List_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_StreamService_List_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, ""))
 
-	pattern_StreamService_BulkEcho_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_StreamService_BulkEcho_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, ""))
+
+	pattern_StreamService_Download_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "download"}, ""))
 )
 
 var (
@@ -293,4 +357,6 @@ var (
 	forward_StreamService_List_0 = runtime.ForwardResponseStream
 
 	forward_StreamService_BulkEcho_0 = runtime.ForwardResponseStream
+
+	forward_StreamService_Download_0 = runtime.ForwardResponseStream
 )

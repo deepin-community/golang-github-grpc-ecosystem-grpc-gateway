@@ -2,38 +2,37 @@ Source: golang-github-grpc-ecosystem-grpc-gateway
 Maintainer: Debian Go Packaging Team <team+pkg-go@tracker.debian.org>
 Uploaders: Martín Ferrari <tincho@debian.org>,
            Tim Potter <tpot@hpe.com>,
-Section: devel
+Section: golang
 Testsuite: autopkgtest-pkg-go
 Priority: optional
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 13),
                dh-golang,
                golang-any,
-               golang-github-dghubble-sling-dev,
-               golang-github-ghodss-yaml-dev,
+               golang-github-google-go-cmp-dev,
                golang-github-rogpeppe-fastuuid-dev,
-               golang-glog-dev,
-               golang-golang-x-net-dev,
                golang-golang-x-oauth2-dev,
-               golang-google-genproto-dev (>= 0.0~git20190111~),
-               golang-google-grpc-dev (>= 1.6.0),
-               golang-goprotobuf-dev (>= 1.3.3),
-Standards-Version: 4.5.0
+               golang-golang-x-text-dev,
+               golang-google-genproto-dev (>= 0.0~git20210726.e7812ac~),
+               golang-google-grpc-dev (>= 1.64.0),
+               golang-github-golang-protobuf-1-5-dev,
+               golang-gopkg-yaml.v3-dev
+Standards-Version: 4.7.0
 Vcs-Browser: https://salsa.debian.org/go-team/packages/golang-github-grpc-ecosystem-grpc-gateway
 Vcs-Git: https://salsa.debian.org/go-team/packages/golang-github-grpc-ecosystem-grpc-gateway.git
 Homepage: https://github.com/grpc-ecosystem/grpc-gateway
+Rules-Requires-Root: no
 XS-Go-Import-Path: github.com/grpc-ecosystem/grpc-gateway
 
 Package: golang-github-grpc-ecosystem-grpc-gateway-dev
 Architecture: all
-Depends: golang-github-dghubble-sling-dev,
-         golang-github-ghodss-yaml-dev,
+Depends: golang-github-google-go-cmp-dev,
          golang-github-rogpeppe-fastuuid-dev,
-         golang-glog-dev,
-         golang-golang-x-net-dev,
          golang-golang-x-oauth2-dev,
-         golang-google-genproto-dev (>= 0.0~git20190111~),
-         golang-google-grpc-dev (>= 1.6.0),
-         golang-goprotobuf-dev (>= 1.3.3),
+         golang-golang-x-text-dev,
+         golang-google-genproto-dev (>= 0.0~git20210726.e7812ac~),
+         golang-google-grpc-dev (>= 1.64.0),
+         golang-github-golang-protobuf-1-5-dev,
+         golang-gopkg-yaml.v3-dev,
          ${misc:Depends},
          ${shlibs:Depends},
 Description: gRPC to JSON proxy generator for Golang -- sources

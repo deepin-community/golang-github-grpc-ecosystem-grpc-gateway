@@ -8,19 +8,18 @@ import (
 	"context"
 	"flag"
 
-	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/gateway"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/gateway"
+	"google.golang.org/grpc/grpclog"
 )
 
 var (
 	endpoint   = flag.String("endpoint", "localhost:9090", "endpoint of the gRPC service")
 	network    = flag.String("network", "tcp", `one of "tcp" or "unix". Must be consistent to -endpoint`)
-	swaggerDir = flag.String("swagger_dir", "examples/internal/proto/examplepb", "path to the directory which contains swagger definitions")
+	openAPIDir = flag.String("openapi_dir", "examples/internal/proto/examplepb", "path to the directory which contains OpenAPI definitions")
 )
 
 func main() {
 	flag.Parse()
-	defer glog.Flush()
 
 	ctx := context.Background()
 	opts := gateway.Options{
@@ -29,9 +28,9 @@ func main() {
 			Network: *network,
 			Addr:    *endpoint,
 		},
-		SwaggerDir: *swaggerDir,
+		OpenAPIDir: *openAPIDir,
 	}
 	if err := gateway.Run(ctx, opts); err != nil {
-		glog.Fatal(err)
+		grpclog.Fatal(err)
 	}
 }

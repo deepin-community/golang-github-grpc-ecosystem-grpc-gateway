@@ -28,7 +28,7 @@ type GenerateUnboundMethodsEchoServiceApiService service
 GenerateUnboundMethodsEchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */
@@ -42,7 +42,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/Echo"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -109,7 +109,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -128,7 +128,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 /* 
 GenerateUnboundMethodsEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */
@@ -142,7 +142,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoBody"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -209,7 +209,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -228,7 +228,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 /* 
 GenerateUnboundMethodsEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */
@@ -242,7 +242,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -309,7 +309,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
