@@ -1,3 +1,35 @@
+golang-github-grpc-ecosystem-grpc-gateway (2.20.0-2) unstable; urgency=medium
+
+  * Team upload
+  * Add patch to fix FTBFS on 32bit systems (Closes: #1077062)
+
+ -- Mathias Gibbens <gibmat@debian.org>  Thu, 25 Jul 2024 22:00:41 +0000
+
+golang-github-grpc-ecosystem-grpc-gateway (2.20.0-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream major release (Closes: #1074144)
+  * d/control:
+    - Update Build-Depends and Depends
+    - Update Standards-Version to 4.7.0 (no changes needed)
+  * Update d/copyright
+  * Update list of installed files for bin:golang-grpc-gateway
+
+ -- Mathias Gibbens <gibmat@debian.org>  Thu, 25 Jul 2024 07:35:32 +0000
+
+golang-github-grpc-ecosystem-grpc-gateway (1.16.0-4) unstable; urgency=medium
+
+  * Team upload
+  * d/control:
+    - Update Section to golang
+    - Update Standards-Version to 4.6.2 (no changes needed)
+    - Add Rules-Requires-Root: no
+    - Update debhelper-compat to v13
+    - Replace transitional golang-goprotobuf-dev package
+    - Allow golang-github-golang-protobuf-1-5-dev as optional Depends
+
+ -- Mathias Gibbens <gibmat@debian.org>  Fri, 16 Feb 2024 21:49:21 +0000
+
 golang-github-grpc-ecosystem-grpc-gateway (1.16.0-3) unstable; urgency=medium
 
   * Team upload.

@@ -15,13 +15,18 @@ import (
 type JSONBuiltin struct{}
 
 // ContentType always Returns "application/json".
-func (*JSONBuiltin) ContentType() string {
+func (*JSONBuiltin) ContentType(_ interface{}) string {
 	return "application/json"
 }
 
 // Marshal marshals "v" into JSON
 func (j *JSONBuiltin) Marshal(v interface{}) ([]byte, error) {
 	return json.Marshal(v)
+}
+
+// MarshalIndent is like Marshal but applies Indent to format the output
+func (j *JSONBuiltin) MarshalIndent(v interface{}, prefix, indent string) ([]byte, error) {
+	return json.MarshalIndent(v, prefix, indent)
 }
 
 // Unmarshal unmarshals JSON data into "v".

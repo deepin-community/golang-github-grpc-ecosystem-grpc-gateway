@@ -6,9 +6,9 @@ Files: *
 Copyright: 2015, Gengo, Inc.
 License: BSD-3-clause
 
-Files: third_party/googleapis/*
-Copyright: 2015, Google Inc.
-License: Apache-2.0
+Files: internal/casing/*
+Copyright: 2010, 2019 The Go Authors
+License: BSD-3-clause
 
 Files: debian/*
 Copyright: 2017 Tim Potter <tpot@hpe.com>
@@ -43,13 +43,3 @@ License: BSD-3-clause
  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-License: Apache-2.0
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- .
-   http://www.apache.org/licenses/LICENSE-2.0
- .
- On Debian systems, the complete text of the Apache 2.0
- License can be found in `/usr/share/common-licenses/Apache-2.0`.

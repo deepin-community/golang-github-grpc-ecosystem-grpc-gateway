@@ -5,10 +5,11 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/grpclog"
 )
 
 // Run starts the example gRPC service.
@@ -20,7 +21,7 @@ func Run(ctx context.Context, network, address string) error {
 	}
 	defer func() {
 		if err := l.Close(); err != nil {
-			glog.Errorf("Failed to close %s %s: %v", network, address, err)
+			grpclog.Errorf("Failed to close %s %s: %v", network, address, err)
 		}
 	}()
 
@@ -28,6 +29,7 @@ func Run(ctx context.Context, network, address string) error {
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
 	examples.RegisterNonStandardServiceServer(s, newNonStandardServer())
+	examples.RegisterUnannotatedEchoServiceServer(s, newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceServer(s, abe)
@@ -48,6 +50,7 @@ func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.Serve
 	examples.RegisterEchoServiceHandlerServer(ctx, mux, newEchoServer())
 	examples.RegisterFlowCombinationHandlerServer(ctx, mux, newFlowCombinationServer())
 	examples.RegisterNonStandardServiceHandlerServer(ctx, mux, newNonStandardServer())
+	standalone.RegisterUnannotatedEchoServiceHandlerServer(ctx, mux, newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceHandlerServer(ctx, mux, abe)
@@ -61,14 +64,14 @@ func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.Serve
 
 	go func() {
 		<-ctx.Done()
-		glog.Infof("Shutting down the http gateway server")
+		grpclog.Infof("Shutting down the http gateway server")
 		if err := s.Shutdown(context.Background()); err != nil {
-			glog.Errorf("Failed to shutdown http gateway server: %v", err)
+			grpclog.Errorf("Failed to shutdown http gateway server: %v", err)
 		}
 	}()
 
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
-		glog.Errorf("Failed to listen and serve: %v", err)
+		grpclog.Errorf("Failed to listen and serve: %v", err)
 		return err
 	}
 	return nil
